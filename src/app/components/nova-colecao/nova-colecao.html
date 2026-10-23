@@ -1,0 +1,220 @@
+<div class="nova-colecao-page">
+
+    <main class="nova-colecao-content">
+
+        <div class="cabecalho">
+
+            <button
+                type="button"
+                class="botao-voltar"
+                (click)="voltar()"
+            >
+                <i class="bi bi-arrow-left"></i>
+                Voltar
+            </button>
+
+            <div class="titulo-area">
+
+                <h1>
+                    Nova coleção
+                </h1>
+
+                <p>
+                    Crie uma coleção para organizar seus títulos.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="conteudo-criacao">
+
+
+            <!-- INFORMAÇÕES DA COLEÇÃO -->
+
+            <section class="cartao informacoes">
+
+                <div class="aviso">
+
+                    <div class="aviso-titulo">
+                        <span>NOTICE</span>
+                    </div>
+
+                    <p>
+                        Dê à sua coleção um nome claro e descritivo
+                        para facilitar a identificação dos títulos.
+                    </p>
+
+                    <p>
+                        Uma boa descrição ajuda outras pessoas a
+                        entenderem o objetivo da coleção.
+                    </p>
+
+                </div>
+
+
+                <div class="secao">
+
+                    <h2>
+                        Básico
+                    </h2>
+
+
+                    <div class="campo">
+
+                        <label for="nome">
+                            Nome *
+                        </label>
+
+                        <input
+                            id="nome"
+                            type="text"
+                            [(ngModel)]="nome"
+                            placeholder="Ex.: Meus títulos"
+                        >
+
+                    </div>
+
+
+                    <div class="campo">
+
+                        <label for="descricao">
+                            Descrição
+                        </label>
+
+                        <textarea
+                            id="descricao"
+                            [(ngModel)]="descricao"
+                            placeholder="Opcional — sobre o que é esta coleção?"
+                            rows="5"
+                        ></textarea>
+
+                        <span class="contador">
+                            {{ descricao.length }} / 1000
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="secao">
+
+                    <h2>
+                        Visibilidade
+                    </h2>
+
+                    <div class="visibilidade">
+
+                        <label>
+
+                            <input
+                                type="radio"
+                                name="visibilidade"
+                                value="publica"
+                                [(ngModel)]="visibilidade"
+                            >
+
+                            <span>
+                                Pública
+                            </span>
+
+                        </label>
+
+
+                        <label>
+
+                            <input
+                                type="radio"
+                                name="visibilidade"
+                                value="privada"
+                                [(ngModel)]="visibilidade"
+                            >
+
+                            <span>
+                                Privada
+                            </span>
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+
+                <div class="acoes">
+
+                    <button
+                        type="button"
+                        class="botao-cancelar"
+                        (click)="cancelar()"
+                    >
+                        Cancelar
+                    </button>
+
+                    <button
+                        type="button"
+                        class="botao-criar"
+                        (click)="criarColecao()"
+                    >
+                        Criar coleção
+                    </button>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- ITENS -->
+
+            <section class="cartao itens">
+
+                <div class="itens-cabecalho">
+
+                    <h2>
+                        Itens
+                    </h2>
+
+                    <p>
+                        Pesquise títulos para adicionar à coleção.
+                    </p>
+
+                </div>
+
+
+                <div class="pesquisa">
+
+                    <i class="bi bi-search"></i>
+
+                    <input
+                        type="text"
+                        [(ngModel)]="pesquisa"
+                        placeholder="Pesquisar títulos..."
+                    >
+
+                </div>
+
+
+                <div class="itens-vazio">
+
+                    <i class="bi bi-collection"></i>
+
+                    <span>
+                        Nenhum item adicionado ainda.
+                    </span>
+
+                    <small>
+                        Pesquise acima para adicionar títulos.
+                    </small>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+</div>

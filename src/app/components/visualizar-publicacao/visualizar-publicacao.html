@@ -1,0 +1,104 @@
+<div class="visualizar-page">
+
+    <main class="visualizar-content">
+
+        <div class="cabecalho">
+
+            <button
+                type="button"
+                class="botao-voltar"
+                (click)="voltar()"
+            >
+                <i class="bi bi-arrow-left"></i>
+                Voltar
+            </button>
+
+        </div>
+
+        <div
+            class="publicacao"
+            *ngIf="publicacao"
+        >
+
+            <div class="publicacao-capa">
+
+                <img
+                    *ngIf="publicacao.capa"
+                    [src]="urlCapa(publicacao.capa)"
+                    [alt]="publicacao.titulo"
+                >
+
+                <i
+                    *ngIf="!publicacao.capa"
+                    class="bi bi-book"
+                ></i>
+
+            </div>
+
+            <div class="publicacao-info">
+
+                <h1>
+                    {{ publicacao.titulo }}
+                </h1>
+
+                <div class="publicacao-meta">
+
+                    <span>
+                        <i class="bi bi-eye"></i>
+                        {{ publicacao.visibilidade }}
+                    </span>
+
+                    <span
+                        *ngIf="publicacao.dataPublicacao"
+                    >
+                        <i class="bi bi-calendar3"></i>
+                        {{ publicacao.dataPublicacao | date:'dd/MM/yyyy HH:mm' }}
+                    </span>
+
+                </div>
+
+                <div class="linha"></div>
+
+                <div class="publicacao-descricao">
+
+                    <h2>
+                        Descrição
+                    </h2>
+
+                    <p>
+                        {{ publicacao.conteudo }}
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div
+            class="publicacao-nao-encontrada"
+            *ngIf="!publicacao && !carregando"
+        >
+
+            <i class="bi bi-file-earmark-text"></i>
+
+            <h2>
+                Publicação não encontrada
+            </h2>
+
+            <p>
+                Não foi possível encontrar esta publicação.
+            </p>
+
+            <button
+                type="button"
+                (click)="voltar()"
+            >
+                Voltar para Home
+            </button>
+
+        </div>
+
+    </main>
+
+</div>
