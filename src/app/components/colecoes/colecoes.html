@@ -1,0 +1,545 @@
+<div class="colecoes-page">
+
+    <app-sidebar></app-sidebar>
+
+    <main class="colecoes-content">
+
+        <!-- LISTAGEM -->
+
+        <ng-container *ngIf="!criandoColecao">
+
+            <div class="page-header">
+
+                <div>
+                    <h1>Coleções</h1>
+
+                    <p>
+                        Organize títulos em coleções e explore coleções de outros usuários.
+                    </p>
+                </div>
+
+                <button
+                    type="button"
+                    class="novo-button"
+                    (click)="abrirNovaColecao()"
+                >
+                    <i class="bi bi-plus-lg"></i>
+                    Nova coleção
+                </button>
+
+            </div>
+
+
+            <!-- ABAS -->
+
+            <div class="colecoes-tabs">
+
+                <button
+                    type="button"
+                    class="colecao-tab"
+                    [class.active]="abaAtiva === 'meu'"
+                    (click)="selecionarAba('meu')"
+                >
+                    Meu
+                </button>
+
+                <button
+                    type="button"
+                    class="colecao-tab"
+                    [class.active]="abaAtiva === 'curtido'"
+                    (click)="selecionarAba('curtido')"
+                >
+                    Curtido
+                </button>
+
+            </div>
+
+
+            <!-- FILTROS -->
+
+            <div class="filtros-colecoes">
+
+                <div class="filtro-item filtro-pesquisa">
+
+                    <label>PESQUISA</label>
+
+                    <div class="input-pesquisa">
+
+                        <i class="bi bi-search"></i>
+
+                        <input
+                            type="text"
+                            placeholder="Pesquisar"
+                            [(ngModel)]="pesquisando"
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="filtro-item">
+
+                    <label>TIPO</label>
+
+                    <select
+                        [(ngModel)]="tipoSelecionado"
+                    >
+                        <option value="Todos">
+                            Qualquer
+                        </option>
+
+                        <option value="Mangá">
+                            Mangá
+                        </option>
+
+                        <option value="Livro">
+                            Livro
+                        </option>
+
+                        <option value="PDF">
+                            PDF
+                        </option>
+
+                        <option value="Anotação">
+                            Anotação
+                        </option>
+                    </select>
+
+                </div>
+
+
+                <div class="filtro-item">
+
+                    <label>ORDENAR POR</label>
+
+                    <select
+                        [(ngModel)]="ordenacaoSelecionada"
+                    >
+                        <option value="Mais recentes">
+                            Mais recentes
+                        </option>
+
+                        <option value="Mais antigas">
+                            Mais antigas
+                        </option>
+
+                        <option value="Título">
+                            Título
+                        </option>
+                    </select>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="reset-button"
+                    (click)="redefinirFiltros()"
+                >
+                    <i class="bi bi-arrow-counterclockwise"></i>
+                    REDEFINIR
+                </button>
+
+            </div>
+
+
+            <!-- QUANTIDADE -->
+
+            <div class="resultado-quantidade">
+
+                <span>
+                    {{ colecoesFiltradas.length }}
+                    {{ colecoesFiltradas.length === 1 ? 'coleção' : 'coleções' }}
+                </span>
+
+            </div>
+
+
+            <!-- COLEÇÕES -->
+
+            <section
+                class="colecoes-grid"
+                *ngIf="colecoesFiltradas.length > 0"
+            >
+
+                <article
+                    class="colecao-card"
+                    *ngFor="let colecao of colecoesFiltradas"
+                >
+
+                    <div class="colecao-card-header">
+
+                        <h2>
+                            {{ colecao.titulo }}
+                        </h2>
+
+                        <button
+                            *ngIf="abaAtiva === 'meu'"
+                            type="button"
+                            class="excluir-button"
+                            (click)="excluirColecao(colecao)"
+                            title="Excluir coleção"
+                        >
+                            <i class="bi bi-trash"></i>
+                        </button>
+
+                    </div>
+
+
+                    <div class="colecao-meta">
+
+                        <span>
+                            {{ colecao.usuario }}
+                        </span>
+
+                        <span>•</span>
+
+                        <span>
+                            {{ colecao.quantidadeTitulos }}
+                            {{ colecao.quantidadeTitulos === 1 ? 'título' : 'títulos' }}
+                        </span>
+
+                        <span>•</span>
+
+                        <span>
+                            Criado {{ colecao.criadoHa }}
+                        </span>
+
+                        <span>•</span>
+
+                        <span>
+                            Atualizado {{ colecao.atualizadoHa }}
+                        </span>
+
+                    </div>
+
+
+                    <p
+                        class="colecao-descricao"
+                        *ngIf="colecao.descricao"
+                    >
+                        {{ colecao.descricao }}
+                    </p>
+
+
+                    <div
+                        class="colecao-capas"
+                        *ngIf="colecao.capas.length > 0"
+                    >
+
+                        <div
+                            class="colecao-capa"
+                            *ngFor="let capa of colecao.capas"
+                        >
+                            <img
+                                [src]="capa"
+                                [alt]="colecao.titulo"
+                            >
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="colecao-sem-titulos"
+                        *ngIf="colecao.capas.length === 0"
+                    >
+                        <i class="bi bi-collection"></i>
+
+                        <span>
+                            Nenhum título nesta coleção.
+                        </span>
+                    </div>
+
+                </article>
+
+            </section>
+
+
+            <!-- VAZIO -->
+
+            <section
+                class="colecoes-vazio"
+                *ngIf="colecoesFiltradas.length === 0"
+            >
+
+                <div class="icone-colecao">
+
+                    <i class="bi bi-collection"></i>
+
+                </div>
+
+                <h2>
+                    {{ abaAtiva === 'meu'
+                        ? 'Nenhuma coleção ainda'
+                        : 'Nenhuma coleção curtida'
+                    }}
+                </h2>
+
+                <p>
+                    {{ abaAtiva === 'meu'
+                        ? 'Crie sua primeira coleção para começar a agrupar títulos.'
+                        : 'As coleções que você curtir aparecerão aqui.'
+                    }}
+                </p>
+
+                <button
+                    *ngIf="abaAtiva === 'meu'"
+                    type="button"
+                    class="novo-button vazio-button"
+                    (click)="abrirNovaColecao()"
+                >
+                    <i class="bi bi-plus-lg"></i>
+                    Nova coleção
+                </button>
+
+            </section>
+
+        </ng-container>
+
+
+        <!-- NOVA COLEÇÃO -->
+
+        <ng-container *ngIf="criandoColecao">
+
+            <div class="criacao-header">
+
+                <div>
+
+                    <h1>Nova coleção</h1>
+
+                    <p>
+                        Crie uma coleção para organizar seus títulos.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="criacao-layout">
+
+
+                <!-- ÁREA ESQUERDA -->
+
+                <div class="criacao-principal">
+
+
+                    <div class="aviso-card">
+
+                        <div class="aviso-icon">
+                            <i class="bi bi-info-circle"></i>
+                        </div>
+
+                        <div>
+
+                            <strong>AVISO</strong>
+
+                            <p>
+                                Dê à sua coleção um título claro e descritivo
+                                para que outras pessoas possam encontrá-la.
+                                Evite nomes vagos e use uma breve descrição
+                                explicando o tema da coleção.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <section class="criacao-card">
+
+                        <div class="criacao-card-header">
+
+                            <h2>Noções básicas</h2>
+
+                        </div>
+
+
+                        <div class="campo-criacao">
+
+                            <label>
+                                NOME
+                            </label>
+
+                            <input
+                                type="text"
+                                [(ngModel)]="nomeColecao"
+                                placeholder="Nome da coleção"
+                            >
+
+                        </div>
+
+
+                        <div class="campo-criacao">
+
+                            <label>
+                                DESCRIÇÃO
+                            </label>
+
+                            <textarea
+                                [(ngModel)]="descricaoColecao"
+                                placeholder="Descreva sua coleção..."
+                            ></textarea>
+
+                        </div>
+
+                    </section>
+
+
+                    <!-- VISIBILIDADE -->
+
+                    <section class="visibilidade-card">
+
+                        <div class="visibilidade-header">
+
+                            <div>
+
+                                <h2>Visibilidade</h2>
+
+                                <p>
+                                    Escolha quem poderá encontrar sua coleção.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="visibilidade-opcoes">
+
+                            <label
+                                class="visibilidade-option"
+                                [class.selected]="visibilidade === 'publica'"
+                            >
+
+                                <input
+                                    type="radio"
+                                    name="visibilidade"
+                                    value="publica"
+                                    [(ngModel)]="visibilidade"
+                                >
+
+                                <i class="bi bi-globe2"></i>
+
+                                <div>
+
+                                    <strong>Pública</strong>
+
+                                    <span>
+                                        Qualquer pessoa poderá encontrar.
+                                    </span>
+
+                                </div>
+
+                            </label>
+
+
+                            <label
+                                class="visibilidade-option"
+                                [class.selected]="visibilidade === 'privada'"
+                            >
+
+                                <input
+                                    type="radio"
+                                    name="visibilidade"
+                                    value="privada"
+                                    [(ngModel)]="visibilidade"
+                                >
+
+                                <i class="bi bi-lock"></i>
+
+                                <div>
+
+                                    <strong>Privada</strong>
+
+                                    <span>
+                                        Somente você poderá visualizar.
+                                    </span>
+
+                                </div>
+
+                            </label>
+
+                        </div>
+
+                    </section>
+
+
+                    <div class="acoes-criacao">
+
+                        <button
+                            type="button"
+                            class="cancelar-button"
+                            (click)="cancelarCriacao()"
+                        >
+                            Cancelar
+                        </button>
+
+                        <button
+                            type="button"
+                            class="criar-button"
+                            (click)="criarColecao()"
+                        >
+                            Criar coleção
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ÁREA DOS TÍTULOS -->
+
+                <aside class="itens-criacao">
+
+                    <div class="itens-header">
+
+                        <div>
+
+                            <h2>Títulos</h2>
+
+                            <p>
+                                Adicione títulos à coleção.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="busca-titulos">
+
+                        <i class="bi bi-search"></i>
+
+                        <input
+                            type="text"
+                            [(ngModel)]="buscaTitulo"
+                            placeholder="Pesquisar títulos..."
+                        >
+
+                    </div>
+
+
+                    <div class="itens-vazio">
+
+                        <i class="bi bi-book"></i>
+
+                        <h3>Nenhum título encontrado</h3>
+
+                        <p>
+                            Os títulos disponíveis aparecerão aqui.
+                        </p>
+
+                    </div>
+
+                </aside>
+
+            </div>
+
+        </ng-container>
+
+    </main>
+
+</div>
