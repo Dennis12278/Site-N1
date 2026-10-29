@@ -11,17 +11,13 @@ export class ApiService {
   constructor(private http: HttpClient) {
   }
 
+  /* =========================================
+     PUBLICAÇÕES
+  ========================================= */
+
   listarDocumentos(publicado?: boolean) {
     const filtro = publicado === undefined ? '' : '?publicado=' + publicado;
     return this.http.get<any[]>(this.apiUrl + '/Documento' + filtro);
-  }
-
-    cadastrar(dados: { nome: string; email: string; senha: string }) {
-    return this.http.post<any>(this.apiUrl + '/Auth/Cadastrar', dados);
-  }
-
-  login(dados: { email: string; senha: string }) {
-    return this.http.post<any>(this.apiUrl + '/Auth/Login', dados);
   }
 
   criarDocumento(documento: FormData) {
@@ -56,6 +52,22 @@ export class ApiService {
     return this.apiUrl + capa;
   }
 
+  /* =========================================
+     AUTENTICAÇÃO
+  ========================================= */
+
+  cadastrar(dados: { nome: string; email: string; senha: string }) {
+    return this.http.post<any>(this.apiUrl + '/Auth/Cadastrar', dados);
+  }
+
+  login(dados: { email: string; senha: string }) {
+    return this.http.post<any>(this.apiUrl + '/Auth/Login', dados);
+  }
+
+  /* =========================================
+     NOTIFICAÇÕES
+  ========================================= */
+
   listarNotificacoes() {
     return this.http.get<any[]>(this.apiUrl + '/Notificacao');
   }
@@ -66,6 +78,10 @@ export class ApiService {
       {}
     );
   }
+
+  /* =========================================
+     COLEÇÕES
+  ========================================= */
 
   listarColecoes() {
     return this.http.get<any[]>(
@@ -93,6 +109,34 @@ export class ApiService {
     );
   }
 
+  listarColecoesComPublicacao(idUsuario: number, idDocumento: number) {
+    return this.http.get<any[]>(this.apiUrl + '/ColecaoDocumento/Colecoes?idUsuario=' + idUsuario + '&idDocumento=' + idDocumento);
+  }
+
+  adicionarPublicacaoNaColecao(idColecao: number, idDocumento: number) {
+    return this.http.post(this.apiUrl + '/ColecaoDocumento/Adicionar?idColecao=' + idColecao + '&idDocumento=' + idDocumento, {});
+  }
+
+  removerPublicacaoDaColecao(idColecao: number, idDocumento: number) {
+    return this.http.delete(this.apiUrl + '/ColecaoDocumento/Remover?idColecao=' + idColecao + '&idDocumento=' + idDocumento);
+  }
+
+  /* =========================================
+     MARCADORES DE PUBLICAÇÃO
+  ========================================= */
+
+  obterMarcador(idUsuario: number, idDocumento: number) {
+    return this.http.get<{ marcador: string }>(this.apiUrl + '/MarcadorPublicacao?idUsuario=' + idUsuario + '&idDocumento=' + idDocumento);
+  }
+
+  definirMarcador(idUsuario: number, idDocumento: number, marcador: string) {
+    return this.http.put(this.apiUrl + '/MarcadorPublicacao', { idUsuario, idDocumento, marcador });
+  }
+
+  /* =========================================
+     CALENDÁRIO
+  ========================================= */
+
   listarCalendario(idUsuario: number) {
     return this.http.get<any[]>(this.apiUrl + '/Calendario?idUsuario=' + idUsuario);
   }
@@ -109,6 +153,10 @@ export class ApiService {
     return this.http.delete(this.apiUrl + '/Calendario/' + id);
   }
 
+  /* =========================================
+     HISTÓRICO DE LEITURA
+  ========================================= */
+
   listarHistorico(idUsuario: number) {
     return this.http.get<any[]>(this.apiUrl + '/HistoricoLeitura?idUsuario=' + idUsuario);
   }
@@ -116,6 +164,10 @@ export class ApiService {
   registrarLeitura(idUsuario: number, idDocumento: number) {
     return this.http.post(this.apiUrl + '/HistoricoLeitura/Registrar?idUsuario=' + idUsuario + '&idDocumento=' + idDocumento, {});
   }
+
+  /* =========================================
+     GRUPOS SEGUIDOS
+  ========================================= */
 
   listarGruposSeguidos(idUsuario: number) {
     return this.http.get<any[]>(this.apiUrl + '/GrupoUsuario/Seguidos?idUsuario=' + idUsuario);

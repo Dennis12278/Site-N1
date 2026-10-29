@@ -2,8 +2,10 @@ import { Component, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
+import { SessaoService } from '../../services/sessao.service';
 
 interface Leitura {
+  idDocumento: number;
   titulo: string;
   capa: string;
   lido: string;
@@ -52,56 +54,7 @@ export class Home {
   rankingAtual = 'recentes';
 
 
-  leituras: Leitura[] = [
-    {
-      titulo: 'Conteúdo recente',
-      capa: '',
-      lido: '0',
-      total: '0',
-      progresso: 0,
-      lidoHa: 'agora'
-    },
-    {
-      titulo: 'Resumo de estudos',
-      capa: '',
-      lido: '0',
-      total: '0',
-      progresso: 0,
-      lidoHa: 'agora'
-    },
-    {
-      titulo: 'Material de estudo',
-      capa: '',
-      lido: '0',
-      total: '0',
-      progresso: 0,
-      lidoHa: 'agora'
-    },
-    {
-      titulo: 'Anotações recentes',
-      capa: '',
-      lido: '0',
-      total: '0',
-      progresso: 0,
-      lidoHa: 'agora'
-    },
-    {
-      titulo: 'Leitura recente',
-      capa: '',
-      lido: '0',
-      total: '0',
-      progresso: 0,
-      lidoHa: 'agora'
-    },
-    {
-      titulo: 'Outro conteúdo',
-      capa: '',
-      lido: '0',
-      total: '0',
-      progresso: 0,
-      lidoHa: 'agora'
-    }
-  ];
+  leituras: Leitura[] = [];
 
 
   constructor(
@@ -110,6 +63,7 @@ export class Home {
     private changeDetectorRef: ChangeDetectorRef
   ) {
     this.carregarDocumentos();
+    this.carregarHistorico();
   }
 
 
@@ -147,6 +101,41 @@ export class Home {
           erro
         );
 
+      }
+
+    });
+
+  }
+
+
+  carregarHistorico(): void {
+
+    const usuario = SessaoService.usuario();
+
+    if (!usuario) {
+      return;
+    }
+
+    this.apiService.listarHistorico(usuario.id).subscribe({
+
+      next: itens => {
+
+        this.leituras = itens.map(item => ({
+          idDocumento: item.idDocumento,
+          titulo: item.titulo,
+          capa: item.capa ?? '',
+          lido: '',
+          total: '',
+          progresso: item.progresso,
+          lidoHa: this.tempoPublicacao(item.dataUltimaLeitura)
+        }));
+
+        this.changeDetectorRef.detectChanges();
+
+      },
+
+      error: erro => {
+        console.error('Erro ao buscar histórico:', erro);
       }
 
     });

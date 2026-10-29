@@ -114,11 +114,21 @@
 
             <div class="history-cards">
 
-                <div class="history-card" *ngFor="let leitura of leiturasExibidas">
+                <div
+                    class="history-card"
+                    *ngFor="let leitura of leiturasExibidas"
+                    (click)="abrirPublicacao({ id: leitura.idDocumento })"
+                >
 
                     <div class="history-cover">
 
-                        <i class="bi bi-book"></i>
+                        <img
+                            *ngIf="leitura.capa"
+                            [src]="urlCapa(leitura.capa)"
+                            [alt]="leitura.titulo"
+                        >
+
+                        <i *ngIf="!leitura.capa" class="bi bi-book"></i>
 
                     </div>
 
@@ -201,14 +211,14 @@
 
         <div class="ranking-grid" *ngIf="documentosRanking.length > 0">
 
-            <article class="ranking-card" *ngFor="let documento of documentosRanking; let i = index">
+            <article class="ranking-card" *ngFor="let documento of documentosRanking; let i = index" (click)="abrirPublicacao(documento)">
 
                 <div class="ranking-cover">
 
                     <span class="ranking-position">
                         #{{ i + 1 }}
                     </span>
-                    
+
                     <img *ngIf="documento.capa" class="ranking-cover-img"
                         [src]="urlCapa(documento.capa)" [alt]="documento.titulo">
 
@@ -262,7 +272,6 @@
                     Mais seguidos
                 </h2>
 
-                <
 
             </div>
 
