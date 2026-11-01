@@ -15,11 +15,15 @@ interface Leitura {
 }
 
 interface ColecaoHome {
+  id: number;
+  idUsuario: number;
   usuario: string;
-  capa: string;
+  capas: (string | null)[];
   titulo: string;
   quantidadeTitulos: number;
   tempo: string;
+  curtidas: number;
+  curtiu: boolean;
 }
 
 @Component({
@@ -38,6 +42,8 @@ export class Home {
   documentosRanking: any[] = [];
 
   colecoesHome: ColecaoHome[] = [];
+
+  filtroColecao: 'todas' | 'minhas' | 'curtidas' = 'todas';
 
   historicoMinimizado = false;
 
@@ -64,6 +70,7 @@ export class Home {
   ) {
     this.carregarDocumentos();
     this.carregarHistorico();
+    this.carregarColecoes();
   }
 
 
@@ -139,6 +146,45 @@ export class Home {
       }
 
     });
+
+  }
+
+
+  carregarColecoes(): void {
+
+    const usuario = SessaoService.usuario();
+
+    this.apiService.listarColecoesPublicas(usuario ? usuario.id : 0).subscribe({
+
+      next: itens => {
+
+        this.colecoesHome = itens.map(item => ({
+          id: item.id,
+          idUsuario: item.idUsuario,
+          curtiu: item.curtiu,
+          usuario: item.nomeUsuario,
+          capas: item.capas ?? [],
+          titulo: item.titulo,
+          quantidadeTitulos: item.quantidadeTitulos,
+          tempo: this.tempoPublicacao(item.dataCriacao),
+          curtidas: item.curtidas
+        }));
+
+        this.changeDetectorRef.detectChanges();
+
+      },
+
+      error: erro => {
+        console.error('Erro ao buscar coleções públicas:', erro);
+      }
+
+    });
+
+  }
+
+  abrirColecao(colecao: ColecaoHome): void {
+
+    this.router.navigate(['/colecao', colecao.id]);
 
   }
 
@@ -238,15 +284,34 @@ export class Home {
   }
 
 
+  get colecoesFiltradas(): ColecaoHome[] {
+
+    const usuario = SessaoService.usuario();
+
+    if (this.filtroColecao === 'minhas') {
+      return this.colecoesHome.filter(c => !!usuario && c.idUsuario === usuario.id);
+    }
+
+    if (this.filtroColecao === 'curtidas') {
+      return this.colecoesHome.filter(c => c.curtiu);
+    }
+
+    return this.colecoesHome;
+
+  }
+
   get colecoesExibidas(): ColecaoHome[] {
 
-    const inicio =
-      this.paginaColecoes * 5;
+    const inicio = this.paginaColecoes * 5;
 
-    return this.colecoesHome.slice(
-      inicio,
-      inicio + 5
-    );
+    return this.colecoesFiltradas.slice(inicio, inicio + 5);
+
+  }
+
+  selecionarFiltroColecao(filtro: 'todas' | 'minhas' | 'curtidas'): void {
+
+    this.filtroColecao = filtro;
+    this.paginaColecoes = 0;
 
   }
 

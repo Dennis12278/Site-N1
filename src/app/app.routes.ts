@@ -14,7 +14,8 @@ import { Notificacoes } from './components/notificacoes/notificacoes';
 import { Calendario } from './components/calendario/calendario';
 import { Home } from './components/home/home';
 import { VisualizarPublicacao } from './components/visualizar-publicacao/visualizar-publicacao';
-import { NovaColecao } from './components/nova-colecao/nova-colecao';
+import { ColecaoEditor } from './components/colecao-editor/colecao-editor';
+import { ColecaoDetalhe } from './components/colecao-detalhe/colecao-detalhe';
 import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
@@ -52,7 +53,11 @@ export const routes: Routes = [
 
       { path: 'minhas-publicacoes', component: MinhasPublicacoes },
 
-      { path: 'nova-colecao', component: NovaColecao },
+      { path: 'nova-colecao', component: ColecaoEditor },
+
+      { path: 'colecao/:id', component: ColecaoDetalhe },
+
+      { path: 'colecao/:id/editar', component: ColecaoEditor },
 
       {
         path: 'configuracoes',

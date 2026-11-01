@@ -218,7 +218,7 @@
                     <span class="ranking-position">
                         #{{ i + 1 }}
                     </span>
-
+                    
                     <img *ngIf="documento.capa" class="ranking-cover-img"
                         [src]="urlCapa(documento.capa)" [alt]="documento.titulo">
 
@@ -450,48 +450,72 @@
         </div>
 
 
-        <!-- COLEÇÕES -->
+        <!-- COLEÇÕES PÚBLICAS -->
 
-        <div class="colecoes-home-grid" *ngIf="colecoesHome.length > 0">
+        <div class="colecoes-abas">
 
-            <article class="colecao-home-card" *ngFor="let colecao of colecoesExibidas" (click)="irParaColecoes()">
+            <button type="button" [class.ativa]="filtroColecao === 'todas'" (click)="selecionarFiltroColecao('todas')">
+                Todas
+            </button>
 
-                <div class="colecao-home-usuario">
+            <button type="button" [class.ativa]="filtroColecao === 'minhas'" (click)="selecionarFiltroColecao('minhas')">
+                Minhas
+            </button>
 
-                    {{ colecao.usuario }}
+            <button type="button" [class.ativa]="filtroColecao === 'curtidas'" (click)="selecionarFiltroColecao('curtidas')">
+                Curtidas
+            </button>
+
+        </div>
+
+        <div class="colecoes-home-grid" *ngIf="colecoesFiltradas.length > 0">
+
+            <article
+                class="colecao-home-card"
+                *ngFor="let colecao of colecoesExibidas"
+                (click)="abrirColecao(colecao)"
+            >
+
+                <div class="colecao-home-mosaico">
+
+                    <span class="colecao-home-dono">
+                        {{ colecao.usuario }}
+                    </span>
+
+                    <ng-container *ngIf="colecao.capas.length > 0; else semCapas">
+                        <img
+                            *ngFor="let capa of colecao.capas; let i = index"
+                            class="mosaico-img"
+                            [ngClass]="'mosaico-' + colecao.capas.length + '-' + i"
+                            [src]="urlCapa(capa)"
+                            alt=""
+                        >
+                    </ng-container>
+
+                    <ng-template #semCapas>
+                        <i class="bi bi-collection"></i>
+                    </ng-template>
 
                 </div>
 
-
-                <div class="colecao-home-capa">
-
-                    <img *ngIf="colecao.capa" [src]="colecao.capa" [alt]="colecao.titulo">
-
-                    <i *ngIf="!colecao.capa" class="bi bi-collection"></i>
-
-                </div>
-
+                <h3>
+                    {{ colecao.titulo }}
+                </h3>
 
                 <div class="colecao-home-meta">
 
                     <span>
                         {{ colecao.quantidadeTitulos }}
-                        {{ colecao.quantidadeTitulos === 1
-                        ? 'título'
-                        : 'títulos'
-                        }}
+                        {{ colecao.quantidadeTitulos === 1 ? 'título' : 'títulos' }}
+                        · {{ colecao.tempo }}
                     </span>
 
                     <span>
-                        {{ colecao.tempo }}
+                        <i class="bi bi-hand-thumbs-up"></i>
+                        {{ colecao.curtidas }}
                     </span>
 
                 </div>
-
-
-                <h3>
-                    {{ colecao.titulo }}
-                </h3>
 
             </article>
 

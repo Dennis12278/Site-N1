@@ -109,6 +109,42 @@ export class ApiService {
     );
   }
 
+  listarColecoesPublicas(idUsuario: number) {
+    return this.http.get<any[]>(this.apiUrl + '/ColecaoPublica/Publicas?idUsuario=' + idUsuario);
+  }
+
+  listarColecoesCurtidas(idUsuario: number) {
+    return this.http.get<any[]>(this.apiUrl + '/ColecaoPublica/Curtidas?idUsuario=' + idUsuario);
+  }
+
+  listarMinhasColecoes(idUsuario: number) {
+    return this.http.get<any[]>(this.apiUrl + '/ColecaoPublica/Minhas?idUsuario=' + idUsuario);
+  }
+
+  obterColecaoPublica(id: number, idUsuario: number) {
+    return this.http.get<any>(this.apiUrl + '/ColecaoPublica/' + id + '?idUsuario=' + idUsuario);
+  }
+
+  criarColecaoPublica(dados: any) {
+    return this.http.post<any>(this.apiUrl + '/ColecaoPublica/Criar', dados);
+  }
+
+  atualizarColecaoPublica(id: number, dados: any) {
+    return this.http.put(this.apiUrl + '/ColecaoPublica/' + id, dados);
+  }
+
+  salvarItensColecao(id: number, idUsuario: number, ids: number[]) {
+    return this.http.put(this.apiUrl + '/ColecaoPublica/' + id + '/Itens', { idUsuario, ids });
+  }
+
+  curtirColecao(id: number, idUsuario: number) {
+    return this.http.post<any>(this.apiUrl + '/ColecaoPublica/' + id + '/Curtir?idUsuario=' + idUsuario, {});
+  }
+
+  excluirColecaoPublica(id: number, idUsuario: number) {
+    return this.http.delete(this.apiUrl + '/ColecaoPublica/' + id + '?idUsuario=' + idUsuario);
+  }
+
   listarColecoesComPublicacao(idUsuario: number, idDocumento: number) {
     return this.http.get<any[]>(this.apiUrl + '/ColecaoDocumento/Colecoes?idUsuario=' + idUsuario + '&idDocumento=' + idDocumento);
   }
